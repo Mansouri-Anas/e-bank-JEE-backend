@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 public class CurrentBankAccountDTO extends BankAccountDTO{
-    private String id;
+    private String accountId;
     private double balance;
     private Date createdAt;
     private AccountStatus status;

@@ -7,9 +7,7 @@ import org.sid.digitalbankingbackend.dtos.SavingBankAccountDTO;
 import org.sid.digitalbankingbackend.entities.*;
 import org.sid.digitalbankingbackend.enums.AccountStatus;
 import org.sid.digitalbankingbackend.enums.OperationType;
-import org.sid.digitalbankingbackend.exceptions.BankAccountNotFoundException;
 import org.sid.digitalbankingbackend.exceptions.CustomerNotFoundException;
-import org.sid.digitalbankingbackend.exceptions.InsufficientBalanceException;
 import org.sid.digitalbankingbackend.repositories.AccountOperationRepository;
 import org.sid.digitalbankingbackend.repositories.BankAccountRepository;
 import org.sid.digitalbankingbackend.repositories.CustomerRepository;
@@ -53,9 +51,9 @@ public class DigitalBankingBackendApplication {
                 for (int i = 0; i <10 ; i++) {
                     String accountId;
                     if(bankAccount instanceof SavingBankAccountDTO){
-                        accountId=((SavingBankAccountDTO) bankAccount).getId();
+                        accountId=((SavingBankAccountDTO) bankAccount).getAccountId();
                     } else{
-                        accountId=((CurrentBankAccountDTO) bankAccount).getId();
+                        accountId=((CurrentBankAccountDTO) bankAccount).getAccountId();
                     }
                     bankAccountService.credit(accountId,10000+Math.random()*120000,"Credit");
                     bankAccountService.debit(accountId,1000+Math.random()*9000,"Debit");
@@ -74,7 +72,7 @@ public class DigitalBankingBackendApplication {
             });
             customerRepository.findAll().forEach(customer -> {
                 CurrentAccount currentAccount = new CurrentAccount();
-                currentAccount.setId(UUID.randomUUID().toString());
+                currentAccount.setAccountId(UUID.randomUUID().toString());
                 currentAccount.setBalance(Math.random() * 90000);
                 currentAccount.setCreatedAt(new Date());
                 currentAccount.setStatus(AccountStatus.CREATED);
@@ -83,7 +81,7 @@ public class DigitalBankingBackendApplication {
                 bankAccountRepository.save(currentAccount);
 
                 SavingAccount savingAccount = new SavingAccount();
-                savingAccount.setId(UUID.randomUUID().toString());
+                savingAccount.setAccountId(UUID.randomUUID().toString());
                 savingAccount.setBalance(Math.random() * 90000);
                 savingAccount.setCreatedAt(new Date());
                 savingAccount.setStatus(AccountStatus.CREATED);

@@ -13,7 +13,7 @@ import java.util.List;
 @Data @AllArgsConstructor @NoArgsConstructor
 public abstract class BankAccount {
     @Id
-    private String id;
+    private String accountId;
     private double balance;
     private Date createdAt;
     @Enumerated(EnumType.STRING)

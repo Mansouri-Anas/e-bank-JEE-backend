@@ -2,6 +2,7 @@ package org.sid.digitalbankingbackend.web;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sid.digitalbankingbackend.dtos.BankAccountDTO;
 import org.sid.digitalbankingbackend.dtos.CustomerDTO;
 import org.sid.digitalbankingbackend.entities.Customer;
 import org.sid.digitalbankingbackend.exceptions.CustomerNotFoundException;
@@ -48,5 +49,10 @@ public class CustomerRestController {
     @GetMapping("/customers/search")
     public List<CustomerDTO> searchCustomers(@RequestParam(name = "keyword",defaultValue = "") String keyword){
         return bankAccountService.searchCustomers("%"+keyword+"%");
+    }
+
+    @GetMapping("/customers/{accountId}/bankAccounts")
+    public List<BankAccountDTO> getCustomerBankAccounts(@PathVariable Long accountId) throws CustomerNotFoundException {
+        return bankAccountService.getCustomerBankAccounts(accountId);
     }
 }
