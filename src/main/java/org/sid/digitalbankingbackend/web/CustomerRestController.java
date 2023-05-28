@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor //Injection des dependencs
 @Slf4j
 @CrossOrigin("*")
-//@RequestMapping("/customers")
 public class CustomerRestController {
     private BankAccountService bankAccountService;
 
@@ -45,4 +44,9 @@ public class CustomerRestController {
          bankAccountService.deleteCustomer(customerid);
     }
 
+
+    @GetMapping("/customers/search")
+    public List<CustomerDTO> searchCustomers(@RequestParam(name = "keyword",defaultValue = "") String keyword){
+        return bankAccountService.searchCustomers("%"+keyword+"%");
+    }
 }
