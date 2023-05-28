@@ -1,5 +1,9 @@
 package org.sid.digitalbankingbackend;
 
+import org.sid.digitalbankingbackend.dtos.BankAccountDTO;
+import org.sid.digitalbankingbackend.dtos.CurrentBankAccountDTO;
+import org.sid.digitalbankingbackend.dtos.CustomerDTO;
+import org.sid.digitalbankingbackend.dtos.SavingBankAccountDTO;
 import org.sid.digitalbankingbackend.entities.*;
 import org.sid.digitalbankingbackend.enums.AccountStatus;
 import org.sid.digitalbankingbackend.enums.OperationType;
@@ -26,39 +30,40 @@ public class DigitalBankingBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(DigitalBankingBackendApplication.class, args);
     }
-
     @Bean
-    CommandLineRunner commandLineRunner(BankAccountService bankAccountService) {
+    CommandLineRunner commandLineRunner(BankAccountService bankAccountService){
         return args -> {
-            Stream.of("Hassan", "Ayman", "Youness").forEach(name -> {
-                Customer customer = new Customer();
+            Stream.of("Hassan","Imane","Mohamed").forEach(name->{
+                CustomerDTO customer=new CustomerDTO();
                 customer.setName(name);
-                customer.setEmail(name + "@gmail.com");
+                customer.setEmail(name+"@gmail.com");
                 bankAccountService.saveCustomer(customer);
             });
-            bankAccountService.listCustomers().forEach(customer -> {
+            bankAccountService.listCustomers().forEach(customer->{
                 try {
-                    bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, customer.getId());
-                    bankAccountService.saveSavingBankAccount(Math.random() * 90000, 5.5, customer.getId());
-                    List<BankAccount> bankAccounts = bankAccountService.bankAccountList();
-                    for (BankAccount bankAccount : bankAccounts) {
-                        for (int i = 0; i < 10; i++) {
-                            bankAccountService.credit(bankAccount.getId(), 10000+Math.random()*90000,"Credit");
-                            bankAccountService.debit(bankAccount.getId(), 1000+Math.random()*9000,"Debit");
-                        }
-                    }
+                    bankAccountService.saveCurrentBankAccount(Math.random()*90000,9000,customer.getId());
+                    bankAccountService.saveSavingBankAccount(Math.random()*120000,5.5,customer.getId());
+
                 } catch (CustomerNotFoundException e) {
                     e.printStackTrace();
-                } catch (BankAccountNotFoundException | InsufficientBalanceException e) {
-                    throw new RuntimeException(e);
                 }
             });
-
+            List<BankAccountDTO> bankAccounts = bankAccountService.bankAccountList();
+            for (BankAccountDTO bankAccount:bankAccounts){
+                for (int i = 0; i <10 ; i++) {
+                    String accountId;
+                    if(bankAccount instanceof SavingBankAccountDTO){
+                        accountId=((SavingBankAccountDTO) bankAccount).getId();
+                    } else{
+                        accountId=((CurrentBankAccountDTO) bankAccount).getId();
+                    }
+                    bankAccountService.credit(accountId,10000+Math.random()*120000,"Credit");
+                    bankAccountService.debit(accountId,1000+Math.random()*9000,"Debit");
+                }
+            }
         };
     }
-
-
-    //    @Bean
+//    @Bean
     CommandLineRunner start(CustomerRepository customerRepository, BankAccountRepository bankAccountRepository, AccountOperationRepository accountOperationRepository) {
         return args -> {
             Stream.of("Hassan", "Ayman", "Youness").forEach(name -> {

@@ -1,5 +1,6 @@
 package org.sid.digitalbankingbackend.services;
 
+import org.sid.digitalbankingbackend.dtos.*;
 import org.sid.digitalbankingbackend.entities.BankAccount;
 import org.sid.digitalbankingbackend.entities.CurrentAccount;
 import org.sid.digitalbankingbackend.entities.Customer;
@@ -11,22 +12,26 @@ import org.sid.digitalbankingbackend.exceptions.InsufficientBalanceException;
 import java.util.Currency;
 import java.util.List;
 
-public interface BankAccountService {
-    Customer saveCustomer(Customer customer);
-
-    CurrentAccount saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException;
-    SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
-
-    List<Customer> listCustomers();
-
-    BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException;
-
-    void debit(String accountId, double amount, String desc) throws BankAccountNotFoundException, InsufficientBalanceException;
-
-    void credit(String accountId, double amount, String desc) throws BankAccountNotFoundException;
-
+public interface BankAccountService {  CustomerDTO saveCustomer(CustomerDTO customerDTO);
+    CurrentBankAccountDTO saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException;
+    SavingBankAccountDTO saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
+    List<CustomerDTO> listCustomers();
+    BankAccountDTO getBankAccount(String accountId) throws BankAccountNotFoundException;
+    void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, InsufficientBalanceException;
+    void credit(String accountId, double amount, String description) throws BankAccountNotFoundException;
     void transfer(String accountIdSource, String accountIdDestination, double amount) throws BankAccountNotFoundException, InsufficientBalanceException;
 
+    List<BankAccountDTO> bankAccountList();
 
-    List<BankAccount> bankAccountList();
+    CustomerDTO getCustomer(Long customerId) throws CustomerNotFoundException;
+
+    CustomerDTO updateCustomer(CustomerDTO customerDTO);
+
+    void deleteCustomer(Long customerId);
+
+    List<AccountOperationDTO> accountHistory(String accountId);
+
+    AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException;
+
+    List<CustomerDTO> searchCustomers(String keyword);
 }
